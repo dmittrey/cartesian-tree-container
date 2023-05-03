@@ -6,7 +6,7 @@ namespace Trees
 {
     class CartesianTree
     {
-    public: 
+    public:
         using iterator = CartesianNode *;
 
     private:
@@ -16,8 +16,8 @@ namespace Trees
         CartesianNode *top;
 
     private: // Обслуживающие
-        static CartesianTree &merge(CartesianTree &lTree, CartesianTree &rTree);
-        static split_pair split(CartesianTree& tree, int index);
+        static CartesianNode *merge(CartesianNode *lTree, CartesianNode *rTree);
+        static split_pair split(CartesianTree &tree, int index);
 
     public: // Селекторы
         iterator findKthStats() const;
