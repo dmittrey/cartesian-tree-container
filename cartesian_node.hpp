@@ -19,9 +19,14 @@ namespace Trees
         CartesianNode(int key) : key_(key) {}
 
     public:
-        int size() const;
+        void recalc() noexcept
+        {
+            size_ = 0;
 
-    public:
-        void recalc() const;
+            if (lNode != nullptr)
+                size_ += lNode->size_;
+            if (rNode != nullptr)
+                size_ += rNode->size_;
+        }
     };
 }
