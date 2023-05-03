@@ -10,14 +10,16 @@ namespace Trees
         using iterator = CartesianNode *;
 
     private:
-        using split_pair = std::pair<CartesianTree &, CartesianTree &>;
+        using split_pair = std::pair<CartesianNode *, CartesianNode *>;
 
     private:
         CartesianNode *top;
 
     private: // Обслуживающие
+        /* Метод для разделения дерева по ключу(ключ в правом поддереве) */
         static CartesianNode *merge(CartesianNode *lTree, CartesianNode *rTree);
-        static split_pair split(CartesianTree &tree, int index);
+        /* Метод для слияния двух деревьев */
+        static split_pair split(CartesianNode *tree, int index);
 
     public: // Селекторы
         iterator findKthStats() const;
