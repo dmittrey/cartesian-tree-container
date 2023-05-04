@@ -27,6 +27,12 @@ namespace Trees
                 if (r != nullptr)
                     size_ += r->size_;
             }
+
+            ~CartesianNode()
+            {
+                delete l;
+                delete r;
+            }
         };
 
     private:
@@ -50,5 +56,11 @@ namespace Trees
 
     public: // Модификаторы
         void insert(int key) noexcept;
+
+    public: // Деструктор
+        ~CartesianTree()
+        {
+            delete top;
+        }
     };
 }
