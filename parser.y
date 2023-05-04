@@ -25,7 +25,6 @@ parser::token_type yylex(parser::semantic_type* yylval,
 
 }
 
-
 %token INSERT
 %token FIND_KTH
 %token COUNT_LESS
