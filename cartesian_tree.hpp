@@ -32,9 +32,6 @@ namespace Trees
     private:
         CartesianNode *top = nullptr;
 
-    public: // Конструкторы
-        CartesianTree(int key) : top(new CartesianNode(key)) {}
-
     private: // Обслуживающие
         /* Метод для разделения дерева по ключу(ключ в правом поддереве) */
         static CartesianNode *merge(CartesianNode *lTree, CartesianNode *rTree);
@@ -46,7 +43,9 @@ namespace Trees
         static int size(CartesianNode *node) noexcept;
 
     public: // Селекторы
-        int findKthStats(int k) const noexcept;
+        /* Поиск k-ой меньшей статистики начиная с индекса 0 */
+        int findKthStats(int k) const;
+        /* Поиск кол-ва элементов в дереве меньших чем upperBound */
         int countLess(int upperBound) const noexcept;
 
     public: // Модификаторы
