@@ -32,14 +32,14 @@ namespace Trees
 
         if (index >= tree->key_) //  Ключ в правом поддереве
         {
-            auto [l, r] = split(tree, index);
+            auto [l, r] = split(tree->r, index);
             tree->r = l;
             tree->recalc();
             return {tree, r};
         }
         else
         {
-            auto [l, r] = split(tree, index);
+            auto [l, r] = split(tree->l, index);
             tree->l = r;
             tree->recalc();
             return {l, tree};
@@ -55,7 +55,7 @@ namespace Trees
 
         if (node->prior_ > tree->prior_)
         {
-            auto [r, l] = split(tree, node->key_);
+            auto [l, r] = split(tree, node->key_);
             node->l = l;
             node->r = r;
             node->recalc();
