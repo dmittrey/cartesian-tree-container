@@ -101,7 +101,13 @@ namespace Trees
 
     int CartesianTree::countLess(int upperBound) const noexcept
     {
-        
+        CartesianNode *cur = top;
+        while (cur->key_ < upperBound)
+        {
+            cur = cur->r;
+        }
+
+        return top->size_ - cur->size_;
     }
 
     void CartesianTree::insert(int key) noexcept
