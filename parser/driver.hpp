@@ -38,13 +38,10 @@ namespace yy
             return tt;
         }
 
-        bool parse()
+        void parse()
         {
             parser parser(this);
-            while (true)
-            {
-                parser.parse();
-            }
+            while (!parser.parse());
         }
 
         void insert(int key)
