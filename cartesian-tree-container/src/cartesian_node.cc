@@ -2,6 +2,11 @@
 
 namespace Trees
 {
+    int CartesianTree::CartesianNode::size(CartesianNode *node) noexcept
+    {
+        return (node == nullptr) ? 0 : node->size_;
+    }
+
     void CartesianTree::CartesianNode::recalc() noexcept
     {
         size_ = 1;

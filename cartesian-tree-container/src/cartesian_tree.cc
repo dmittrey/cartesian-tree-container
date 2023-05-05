@@ -76,11 +76,6 @@ namespace Trees
         }
     }
 
-    int CartesianTree::size(CartesianNode *node) noexcept
-    {
-        return (node == nullptr) ? 0 : node->size_;
-    }
-
     CartesianTree::iterator CartesianTree::begin()
     {
         return {top};
@@ -96,7 +91,7 @@ namespace Trees
         CartesianNode *cur = top;
         while (cur != nullptr)
         {
-            int sizeLeft = size(cur->l);
+            int sizeLeft = CartesianNode::size(cur->l);
 
             if (sizeLeft == k)
                 return cur->key_;
@@ -117,7 +112,7 @@ namespace Trees
             cur = cur->r;
         }
 
-        return top->size_ - size(cur);
+        return top->size_ - CartesianNode::size(cur);
     }
 
     void CartesianTree::insert(int key) noexcept
