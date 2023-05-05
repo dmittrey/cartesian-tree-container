@@ -54,7 +54,14 @@ namespace yy
 
         void find_kth(int index)
         {
-            std::cout << tree_->findKthStats(index - 1) << " ";
+            try
+            {
+                std::cout << tree_->findKthStats(index - 1) << " ";
+            }
+            catch (const std::invalid_argument &ex)
+            {
+                std::cout << index << "'th element not found!" << " ";
+            }
         }
 
         void count_less(int upperBound)
