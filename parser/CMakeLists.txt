@@ -18,8 +18,8 @@ add_flex_bison_dependency(scanner parser)
 
 add_library(${PROJECT_NAME}
             driver.hpp
-            ${BISON_parser_OUTPUTS}
-            ${FLEX_lexer_OUTPUTS}
+            ${CMAKE_CURRENT_BINARY_DIR}/lexer.cc
+            ${CMAKE_CURRENT_BINARY_DIR}/parser.cc
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE cartesian-tree-container)
