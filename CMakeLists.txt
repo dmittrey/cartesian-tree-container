@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(syntacore-tools-trial-task)
+project(syntacore-tools-intership-task)
 
 add_subdirectory(parser)
 add_subdirectory(cartesian-tree-container)
