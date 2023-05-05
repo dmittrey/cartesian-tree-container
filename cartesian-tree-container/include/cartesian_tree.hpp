@@ -6,11 +6,18 @@ namespace Trees
 {
     class CartesianTree
     {
+    private:
         struct CartesianNode
         {
+            /* Ключ */
             int key_;
+            /* Приоритет балансирования */
             int prior_ = std::rand();
-            int size_ = 1; /* Размер поддерева */
+            /* Размер поддерева */
+            int size_ = 1;
+
+            /* Родительская вершина для поддержки прямого обхода дерева */
+            CartesianNode *root = nullptr;
 
             CartesianNode *l = nullptr;
             CartesianNode *r = nullptr;
@@ -18,21 +25,10 @@ namespace Trees
             CartesianNode(int key) : key_(key) {}
 
             /* Метод для пересчёта полей вершины */
-            void recalc() noexcept
-            {
-                size_ = 1;
+            void recalc() noexcept;
 
-                if (l != nullptr)
-                    size_ += l->size_;
-                if (r != nullptr)
-                    size_ += r->size_;
-            }
-
-            ~CartesianNode()
-            {
-                delete l;
-                delete r;
-            }
+            void hangL(CartesianNode *node) noexcept;
+            void hangR(CartesianNode *node) noexcept;
         };
 
     private:
@@ -48,6 +44,29 @@ namespace Trees
         /* Метод для получения размера поддерева */
         static int size(CartesianNode *node) noexcept;
 
+    public: // Итераторы
+        class iterator
+        {
+        private:
+            CartesianNode *p_;
+
+        public:
+            iterator(CartesianNode *p) : p_(p) {}
+
+        public:
+            bool operator!=(iterator const &other) const;
+
+            int operator*() const;
+
+            iterator &operator++();
+        };
+
+    public: // Итераторы
+        /* Первый элемент в контейнере */
+        iterator begin();
+        /* Следующий после последнего элемента в контейнере */
+        iterator end();
+
     public: // Селекторы
         /* Поиск k-ой меньшей статистики начиная с индекса 0 */
         int findKthStats(int k) const;
@@ -56,11 +75,5 @@ namespace Trees
 
     public: // Модификаторы
         void insert(int key) noexcept;
-
-    public: // Деструктор
-        ~CartesianTree()
-        {
-            delete top;
-        }
     };
 }

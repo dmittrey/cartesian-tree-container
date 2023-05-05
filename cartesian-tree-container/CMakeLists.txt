@@ -5,6 +5,8 @@ add_library(
     ${PROJECT_NAME} 
     "${CMAKE_CURRENT_SOURCE_DIR}/include/cartesian_tree.hpp" 
     "${CMAKE_CURRENT_SOURCE_DIR}/src/cartesian_tree.cc"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/cartesian_node.cc"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/iterator.cc"
     )
 
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)

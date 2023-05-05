@@ -13,13 +13,13 @@ namespace Trees
 
         if (lTree->prior_ >= rTree->prior_)
         {
-            lTree->r = merge(lTree->r, rTree);
+            lTree->hangR(merge(lTree->r, rTree));
             lTree->recalc();
             return lTree;
         }
         else
         {
-            rTree->l = merge(lTree, rTree->l);
+            rTree->hangL(merge(lTree, rTree->l));
             rTree->recalc();
             return rTree;
         }
@@ -33,14 +33,14 @@ namespace Trees
         if (index >= tree->key_) //  Ключ в правом поддереве
         {
             auto [l, r] = split(tree->r, index);
-            tree->r = l;
+            tree->hangR(l);
             tree->recalc();
             return {tree, r};
         }
         else
         {
             auto [l, r] = split(tree->l, index);
-            tree->l = r;
+            tree->hangL(r);
             tree->recalc();
             return {l, tree};
         }
@@ -56,8 +56,8 @@ namespace Trees
         if (node->prior_ > tree->prior_)
         {
             auto [l, r] = split(tree, node->key_);
-            node->l = l;
-            node->r = r;
+            node->hangL(l);
+            node->hangR(r);
             node->recalc();
             return node;
         }
@@ -65,11 +65,11 @@ namespace Trees
         {
             if (node->key_ >= tree->key_)
             {
-                tree->r = insert(tree->r, node);
+                tree->hangR(insert(tree->r, node));
             }
             else
             {
-                tree->l = insert(tree->l, node);
+                tree->hangL(insert(tree->l, node));
             }
             tree->recalc();
             return tree;
@@ -79,6 +79,16 @@ namespace Trees
     int CartesianTree::size(CartesianNode *node) noexcept
     {
         return (node == nullptr) ? 0 : node->size_;
+    }
+
+    CartesianTree::iterator CartesianTree::begin()
+    {
+        return {top};
+    }
+
+    CartesianTree::iterator CartesianTree::end()
+    {
+        return {nullptr};
     }
 
     int CartesianTree::findKthStats(int k) const
