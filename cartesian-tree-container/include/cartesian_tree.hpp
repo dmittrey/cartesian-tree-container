@@ -34,7 +34,7 @@ namespace Trees
             void hangL(CartesianNode *node) noexcept;
             void hangR(CartesianNode *node) noexcept;
 
-            /**/
+            /*TODO NEED REFACTOR*/
             ~CartesianNode()
             {
                 if (l != nullptr && r != nullptr)
@@ -45,14 +45,83 @@ namespace Trees
                         /* Правое поддерево без изменений, а левое поддерево будет результатом слияния
                             текущего левого поддерева и левого поддерева r*/
                         r->hangL(merge(l, r->l));
-                        /* Поменяли родителя правого ребёнка на нашего родителя */
                         r->root = root;
+                        if (root != nullptr)
+                        {
+                            if (root->r == this)
+                            {
+                                root->r = r;
+                            }
+                            else
+                            {
+                                root->l = r;
+                            }
+                        }
                     }
                     /* Левая вершина заменит нас (аналогичный алгоритм) */
                     else
                     {
                         l->hangR(merge(l->r, r));
                         l->root = root;
+                        if (root != nullptr)
+                        {
+                            if (root->r == this)
+                            {
+                                root->r = l;
+                            }
+                            else
+                            {
+                                root->l = l;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    /* Поменяли родителя правого ребёнка на нашего родителя */
+                    if (l != nullptr)
+                    {
+                        l->root = root;
+                        if (root != nullptr)
+                        {
+                            if (root->r == this)
+                            {
+                                root->r = l;
+                            }
+                            else
+                            {
+                                root->l = l;
+                            }
+                        }
+                    }
+                    else if (r != nullptr)
+                    {
+                        r->root = root;
+                        if (root != nullptr)
+                        {
+                            if (root->r == this)
+                            {
+                                root->r = r;
+                            }
+                            else
+                            {
+                                root->l = r;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (root != nullptr)
+                        {
+                            if (root->r == this)
+                            {
+                                root->r = nullptr;
+                            }
+                            else
+                            {
+                                root->l = nullptr;
+                            }
+                        }
                     }
                 }
             }
@@ -105,14 +174,17 @@ namespace Trees
 
         ~CartesianTree()
         {
-            while (top->l != nullptr)
+            if (top != nullptr)
             {
-                delete top->l;
-            }
+                while (top->l != nullptr)
+                {
+                    delete top->l;
+                }
 
-            while (top->r != nullptr)
-            {
-                delete top->r;
+                while (top->r != nullptr)
+                {
+                    delete top->r;
+                }
             }
 
             delete top;
