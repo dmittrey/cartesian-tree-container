@@ -1,6 +1,4 @@
 #!/bin/zsh
 
-mkdir build
-cd build
-cmake ..
-make
+cmake -B build
+cmake --build build
