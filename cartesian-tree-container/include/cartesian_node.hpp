@@ -33,9 +33,9 @@ namespace Trees
         void hangR(CartesianNode<T> *node) noexcept;
 
         /* Метод для разделения дерева по ключу(ключ в правом поддереве) */
-        static CartesianNode<T> *merge(CartesianNode<T> *lTree, CartesianNode<T> *rTree);
+        static CartesianNode<T> *merge(CartesianNode<T> *lTree, CartesianNode<T> *rTree) noexcept;
         /* Метод для слияния двух деревьев */
-        static std::pair<CartesianNode<T> *, CartesianNode<T> *> split(CartesianNode<T> *tree, int index);
+        static std::pair<CartesianNode<T> *, CartesianNode<T> *> split(CartesianNode<T> *tree, int index) noexcept;
         /* Метод для вставки */
         static CartesianNode<T> *insert(CartesianNode<T> *tree, CartesianNode<T> *node) noexcept;
 
@@ -51,12 +51,7 @@ namespace Trees
     template <typename T>
     void CartesianNode<T>::recalc() noexcept
     {
-        size_ = 1;
-
-        if (l != nullptr)
-            size_ += l->size_;
-        if (r != nullptr)
-            size_ += r->size_;
+        size_ = 1 + size(l) + size(r);
     }
 
     template <typename T>
@@ -76,7 +71,7 @@ namespace Trees
     }
 
     template <typename T>
-    CartesianNode<T> *CartesianNode<T>::merge(CartesianNode<T> *lTree, CartesianNode<T> *rTree)
+    CartesianNode<T> *CartesianNode<T>::merge(CartesianNode<T> *lTree, CartesianNode<T> *rTree) noexcept
     {
         if (lTree == nullptr && rTree == nullptr)
             return nullptr;
@@ -100,7 +95,7 @@ namespace Trees
     }
 
     template <typename T>
-    std::pair<CartesianNode<T> *, CartesianNode<T> *> CartesianNode<T>::split(CartesianNode<T> *tree, int index)
+    std::pair<CartesianNode<T> *, CartesianNode<T> *> CartesianNode<T>::split(CartesianNode<T> *tree, int index) noexcept
     {
         if (tree == nullptr)
             return {nullptr, nullptr};
@@ -125,9 +120,7 @@ namespace Trees
     CartesianNode<T> *CartesianNode<T>::insert(CartesianNode<T> *tree, CartesianNode<T> *node) noexcept
     {
         if (tree == nullptr)
-        {
             return node;
-        }
 
         if (node->prior_ > tree->prior_)
         {
@@ -154,88 +147,53 @@ namespace Trees
     {
         if (l != nullptr && r != nullptr)
         {
-            /* Правая вершина заменит нас */
             if (r->prior_ >= l->prior_)
             {
-                /* Правое поддерево без изменений, а левое поддерево будет результатом слияния
-                    текущего левого поддерева и левого поддерева r*/
                 r->hangL(merge(l, r->l));
-                r->root = root;
                 if (root != nullptr)
                 {
                     if (root->r == this)
-                    {
-                        root->r = r;
-                    }
+                        root->hangR(r);
                     else
-                    {
-                        root->l = r;
-                    }
+                        root->hangL(r);
                 }
             }
-            /* Левая вершина заменит нас (аналогичный алгоритм) */
             else
             {
                 l->hangR(merge(l->r, r));
-                l->root = root;
                 if (root != nullptr)
                 {
                     if (root->r == this)
-                    {
-                        root->r = l;
-                    }
+                        root->hangR(l);
                     else
-                    {
-                        root->l = l;
-                    }
+                        root->hangL(l);
                 }
             }
         }
         else
         {
-            /* Поменяли родителя правого ребёнка на нашего родителя */
-            if (l != nullptr)
+            if (root != nullptr)
             {
-                l->root = root;
-                if (root != nullptr)
+                if (l != nullptr)
                 {
                     if (root->r == this)
-                    {
-                        root->r = l;
-                    }
+                        root->hangR(l);
                     else
-                    {
-                        root->l = l;
-                    }
+                        root->hangL(l);
                 }
-            }
-            else if (r != nullptr)
-            {
-                r->root = root;
-                if (root != nullptr)
+                else if (r != nullptr)
                 {
                     if (root->r == this)
-                    {
-                        root->r = r;
-                    }
+                        root->hangR(r);
                     else
-                    {
-                        root->l = r;
-                    }
+                        root->hangL(r);
                 }
-            }
-            else
-            {
-                if (root != nullptr)
+                else
                 {
                     if (root->r == this)
-                    {
-                        root->r = nullptr;
-                    }
+                        root->hangR(nullptr);
                     else
-                    {
-                        root->l = nullptr;
-                    }
+                        root->hangL(nullptr);
                 }
             }
         }
