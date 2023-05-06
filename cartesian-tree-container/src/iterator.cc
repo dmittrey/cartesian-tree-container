@@ -2,7 +2,7 @@
 
 namespace Trees
 {
-    bool CartesianTree::iterator::operator!=(iterator const &other) const
+    bool CartesianTree::Iterator::operator!=(Iterator const &other) const
     {
         if (p_ != nullptr && other.p_ != nullptr)
         {
@@ -14,7 +14,7 @@ namespace Trees
         }
     }
 
-    int CartesianTree::iterator::operator*() const
+    int CartesianTree::Iterator::operator*() const
     {
         if (p_ == nullptr)
         {
@@ -24,7 +24,7 @@ namespace Trees
         return this->p_->key_;
     }
 
-    CartesianTree::iterator &CartesianTree::iterator::operator++()
+    CartesianTree::Iterator &CartesianTree::Iterator::operator++()
     {
         if (p_ == nullptr)
         {

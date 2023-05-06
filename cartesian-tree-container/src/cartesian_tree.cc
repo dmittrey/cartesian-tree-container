@@ -2,86 +2,12 @@
 
 namespace Trees
 {
-    CartesianTree::CartesianNode *CartesianTree::merge(CartesianNode *lTree, CartesianNode *rTree)
-    {
-        if (lTree == nullptr && rTree == nullptr)
-            return nullptr;
-        if (lTree == nullptr)
-            return rTree;
-        if (rTree == nullptr)
-            return lTree;
-
-        if (lTree->prior_ >= rTree->prior_)
-        {
-            lTree->hangR(merge(lTree->r, rTree));
-            lTree->recalc();
-            return lTree;
-        }
-        else
-        {
-            rTree->hangL(merge(lTree, rTree->l));
-            rTree->recalc();
-            return rTree;
-        }
-    }
-
-    std::pair<CartesianTree::CartesianNode *, CartesianTree::CartesianNode *> CartesianTree::split(CartesianNode *tree, int index)
-    {
-        if (tree == nullptr)
-            return {nullptr, nullptr};
-
-        if (index >= tree->key_) //  Ключ в правом поддереве
-        {
-            auto [l, r] = split(tree->r, index);
-            tree->hangR(l);
-            tree->recalc();
-            return {tree, r};
-        }
-        else
-        {
-            auto [l, r] = split(tree->l, index);
-            tree->hangL(r);
-            tree->recalc();
-            return {l, tree};
-        }
-    }
-
-    CartesianTree::CartesianNode *CartesianTree::insert(CartesianNode *tree, CartesianNode *node) noexcept
-    {
-        if (tree == nullptr)
-        {
-            return node;
-        }
-
-        if (node->prior_ > tree->prior_)
-        {
-            auto [l, r] = split(tree, node->key_);
-            node->hangL(l);
-            node->hangR(r);
-            node->recalc();
-            return node;
-        }
-        else
-        {
-            if (node->key_ >= tree->key_)
-            {
-                tree->hangR(insert(tree->r, node));
-            }
-            else
-            {
-                tree->hangL(insert(tree->l, node));
-            }
-            tree->recalc();
-            return tree;
-        }
-    }
-
-    CartesianTree::iterator CartesianTree::begin()
+    CartesianTree::Iterator CartesianTree::begin()
     {
         return {top};
     }
 
-    CartesianTree::iterator CartesianTree::end()
+    CartesianTree::Iterator CartesianTree::end()
     {
         return {nullptr};
     }
@@ -129,6 +55,24 @@ namespace Trees
 
     void CartesianTree::insert(int key) noexcept
     {
-        top = insert(top, new CartesianNode(key));
+        top = CartesianNode::insert(top, new CartesianNode(key));
+    }
+
+    CartesianTree::~CartesianTree()
+    {
+        if (top != nullptr)
+        {
+            while (top->l != nullptr)
+            {
+                delete top->l;
+            }
+
+            while (top->r != nullptr)
+            {
+                delete top->r;
+            }
+        }
+
+        delete top;
     }
 }
