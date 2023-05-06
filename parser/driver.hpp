@@ -16,11 +16,11 @@ namespace yy
 {
     class Driver
     {
-        Trees::CartesianTree *tree_;
+        Trees::CartesianTree<int> *tree_;
         FlexLexer *plex_;
 
     public:
-        Driver(Trees::CartesianTree *tree, FlexLexer *plex) : tree_(tree), plex_(plex) {}
+        Driver(Trees::CartesianTree<int> *tree, FlexLexer *plex) : tree_(tree), plex_(plex) {}
 
         parser::token_type yylex(parser::semantic_type *yylval)
         {
