@@ -64,9 +64,7 @@ namespace Trees
     {
         l = node;
         if (node != nullptr)
-        {
             node->root = this;
-        }
     }
 
     template <typename T>
@@ -74,9 +72,7 @@ namespace Trees
     {
         r = node;
         if (node != nullptr)
-        {
             node->root = this;
-        }
     }
 
     template <typename T>
@@ -109,19 +105,19 @@ namespace Trees
         if (tree == nullptr)
             return {nullptr, nullptr};
 
-        if (index >= tree->key_) //  Ключ в правом поддереве
-        {
-            auto [l, r] = split(tree->r, index);
-            tree->hangR(l);
-            tree->recalc();
-            return {tree, r};
-        }
-        else
+        if (index < tree->key_) //  Ключ в правом поддереве
         {
             auto [l, r] = split(tree->l, index);
             tree->hangL(r);
             tree->recalc();
             return {l, tree};
+        }
+        else
+        {
+            auto [l, r] = split(tree->r, index);
+            tree->hangR(l);
+            tree->recalc();
+            return {tree, r};
         }
     }
 
@@ -143,14 +139,11 @@ namespace Trees
         }
         else
         {
-            if (node->key_ >= tree->key_)
-            {
-                tree->hangR(insert(tree->r, node));
-            }
-            else
-            {
+            if (node->key_ < tree->key_)
                 tree->hangL(insert(tree->l, node));
-            }
+            else
+                tree->hangR(insert(tree->r, node));
+
             tree->recalc();
             return tree;
         }

@@ -67,8 +67,8 @@ namespace Trees
         if (top == nullptr)
             return 0;
 
+        int prev_less = 0;
         CartesianNode<T> *cur = top;
-        auto prev_less = 0;
         while (cur != nullptr)
         {
             if (cur->key_ < upperBound)
@@ -94,18 +94,14 @@ namespace Trees
     template <typename T>
     CartesianTree<T>::~CartesianTree()
     {
-        if (top != nullptr)
-        {
-            while (top->l != nullptr)
-            {
-                delete top->l;
-            }
+        if (top == nullptr)
+            return;
+            
+        while (top->l != nullptr)
+            delete top->l;
 
-            while (top->r != nullptr)
-            {
-                delete top->r;
-            }
-        }
+        while (top->r != nullptr)
+            delete top->r;
 
         delete top;
     }
