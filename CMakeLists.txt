@@ -18,6 +18,7 @@ add_executable(
   tests
   "google-tests/node_tests.cc"
   "google-tests/tree_tests.cc"
+  "google-tests/iterator_tests.cc"
 )
 target_link_libraries(
   tests
