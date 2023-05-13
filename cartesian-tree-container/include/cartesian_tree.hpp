@@ -9,7 +9,7 @@ namespace Trees
     {
     private:
         /* Корень дерева */
-        CartesianNode<T> *top = nullptr;
+        std::shared_ptr<CartesianNode<T>> top;
 
     public:
         class Iterator;
@@ -94,26 +94,26 @@ namespace Trees
     template <typename T>
     CartesianTree<T>::~CartesianTree()
     {
-        if (top == nullptr)
-            return;
+        // if (top == nullptr)
+        //     return;
             
-        while (top->l != nullptr)
-            delete top->l;
+        // while (top->left != nullptr)
+        //     delete top->left;
 
-        while (top->r != nullptr)
-            delete top->r;
+        // while (top->right != nullptr)
+        //     delete top->right;
 
-        delete top;
+        // delete top;
     }
 
     template <typename T>
     class CartesianTree<T>::Iterator
     {
     private:
-        CartesianNode<T> *p_;
+        std::shared_ptr<CartesianNode<T>> p_;
 
     public:
-        Iterator(CartesianNode<T> *p) : p_(p) {}
+        Iterator(std::shared_ptr<CartesianNode<T>> p) : p_(p) {}
 
     public:
         bool operator!=(Iterator const &other) const;

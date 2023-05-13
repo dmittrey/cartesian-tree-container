@@ -1,11 +1,14 @@
 #pragma once
 
 #include <random>
+#include <iostream>
+#include <memory>
+#include <functional>
 
 namespace Trees
 {
     template <typename T>
-    struct CartesianNode
+    struct CartesianNode : public std::enable_shared_from_this<CartesianNode<T>>
     {
         /* Ключ */
         T key_;
@@ -15,63 +18,64 @@ namespace Trees
         int size_ = 1;
 
         /* Родительская вершина для поддержки прямого обхода дерева */
-        CartesianNode<T> *root = nullptr;
+        std::weak_ptr<CartesianNode<T>> root;
 
-        CartesianNode<T> *l = nullptr;
-        CartesianNode<T> *r = nullptr;
+        std::shared_ptr<CartesianNode<T>> left, right;
 
-        CartesianNode(T key) : key_(key) {}
+        CartesianNode(T key) : key_(key) { std::cout << "Ctor" << key_ << std::endl; }
 
         /* Метод для получения размера поддерева */
-        static int size(CartesianNode<T> *node) noexcept;
+        static int size(std::shared_ptr<CartesianNode<T>> node) noexcept;
 
         /* Метод для пересчёта полей вершины */
         void recalc() noexcept;
 
         /* Методы подвешивающие вершины */
-        void hangL(CartesianNode<T> *node) noexcept;
-        void hangR(CartesianNode<T> *node) noexcept;
+        void hangL(std::shared_ptr<CartesianNode<T>> node) noexcept;
+        void hangR(std::shared_ptr<CartesianNode<T>> node) noexcept;
+
+        void assignParent(std::shared_ptr<CartesianNode<T>> node) noexcept;
 
         /* Метод для разделения дерева по ключу(ключ в правом поддереве) */
-        static CartesianNode<T> *merge(CartesianNode<T> *lTree, CartesianNode<T> *rTree) noexcept;
+        static std::shared_ptr<CartesianNode<T>> merge(std::shared_ptr<CartesianNode<T>> lTree, std::shared_ptr<CartesianNode<T>> rTree) noexcept;
         /* Метод для слияния двух деревьев */
-        static std::pair<CartesianNode<T> *, CartesianNode<T> *> split(CartesianNode<T> *tree, int index) noexcept;
+        static std::pair<std::shared_ptr<CartesianNode<T>>, std::shared_ptr<CartesianNode<T>>> split(std::shared_ptr<CartesianNode<T>> tree, int index) noexcept;
         /* Метод для вставки */
-        static CartesianNode<T> *insert(CartesianNode<T> *tree, CartesianNode<T> *node) noexcept;
+        static std::shared_ptr<CartesianNode<T>> insert(std::shared_ptr<CartesianNode<T>> tree, std::shared_ptr<CartesianNode<T>> node) noexcept;
 
         ~CartesianNode();
     };
 
     template <typename T>
-    int CartesianNode<T>::size(CartesianNode<T> *node) noexcept
+    int CartesianNode<T>::size(std::shared_ptr<CartesianNode<T>> node) noexcept
     {
-        return (node == nullptr) ? 0 : node->size_;
+        return (node) ? node->size_ : 0;
     }
 
     template <typename T>
     void CartesianNode<T>::recalc() noexcept
     {
-        size_ = 1 + size(l) + size(r);
+        size_ = 1 + size(left) + size(right);
     }
 
     template <typename T>
-    void CartesianNode<T>::hangL(CartesianNode<T> *node) noexcept
+    void CartesianNode<T>::hangL(std::shared_ptr<CartesianNode<T>> node) noexcept
     {
-        l = node;
-        if (node != nullptr)
-            node->root = this;
+        left = node;
+        if (node)
+            node->root = this->shared_from_this();
     }
 
     template <typename T>
-    void CartesianNode<T>::hangR(CartesianNode<T> *node) noexcept
+    void CartesianNode<T>::hangR(std::shared_ptr<CartesianNode<T>> node) noexcept
     {
-        r = node;
-        if (node != nullptr)
-            node->root = this;
+        right = node;
+        if (node)
+            node->root = this->shared_from_this();
     }
 
     template <typename T>
-    CartesianNode<T> *CartesianNode<T>::merge(CartesianNode<T> *lTree, CartesianNode<T> *rTree) noexcept
+    std::shared_ptr<CartesianNode<T>> CartesianNode<T>::merge(std::shared_ptr<CartesianNode<T>> lTree, std::shared_ptr<CartesianNode<T>> rTree) noexcept
     {
         if (lTree == nullptr && rTree == nullptr)
             return nullptr;
@@ -82,20 +86,20 @@ namespace Trees
 
         if (lTree->prior_ >= rTree->prior_)
         {
-            lTree->hangR(merge(lTree->r, rTree));
+            lTree->hangR(merge(lTree->right, rTree));
             lTree->recalc();
             return lTree;
         }
         else
         {
-            rTree->hangL(merge(lTree, rTree->l));
+            rTree->hangL(merge(lTree, rTree->left));
             rTree->recalc();
             return rTree;
         }
     }
 
     template <typename T>
-    std::pair<CartesianNode<T> *, CartesianNode<T> *> CartesianNode<T>::split(CartesianNode<T> *tree, int index) noexcept
+    std::pair<std::shared_ptr<CartesianNode<T>>, std::shared_ptr<CartesianNode<T>>> CartesianNode<T>::split(std::shared_ptr<CartesianNode<T>> tree, int index) noexcept
     {
         if (tree == nullptr)
             return {nullptr, nullptr};
@@ -117,7 +121,7 @@ namespace Trees
     }
 
     template <typename T>
-    CartesianNode<T> *CartesianNode<T>::insert(CartesianNode<T> *tree, CartesianNode<T> *node) noexcept
+    std::shared_ptr<CartesianNode<T>> CartesianNode<T>::insert(std::shared_ptr<CartesianNode<T>> tree, std::shared_ptr<CartesianNode<T>> node) noexcept
     {
         if (tree == nullptr)
             return node;
@@ -145,55 +149,58 @@ namespace Trees
     template <typename T>
     CartesianNode<T>::~CartesianNode()
     {
-        if (l != nullptr && r != nullptr)
+        auto shd_root = root.lock();
+
+        std::cout << "Dtor" << key_ << std::endl;
+        if (left && right)
         {
-            if (r->prior_ >= l->prior_)
+            if (right->prior_ >= left->prior_)
             {
-                r->hangL(merge(l, r->l));
-                if (root != nullptr)
+                right->hangL(merge(left, right->left));
+                if (shd_root)
                 {
-                    if (root->r == this)
-                        root->hangR(r);
+                    if (&(*shd_root->right) == this)
+                        shd_root->hangR(right);
                     else
-                        root->hangL(r);
+                        shd_root->hangL(right);
                 }
             }
             else
             {
-                l->hangR(merge(l->r, r));
-                if (root != nullptr)
+                left->hangR(merge(left->right, right));
+                if (shd_root)
                 {
-                    if (root->r == this)
-                        root->hangR(l);
+                    if (&(*shd_root->right) == this)
+                        shd_root->hangR(left);
                     else
-                        root->hangL(l);
+                        shd_root->hangL(left);
                 }
             }
         }
         else
         {
-            if (root != nullptr)
+            if (shd_root)
             {
-                if (l != nullptr)
+                if (left)
                 {
-                    if (root->r == this)
-                        root->hangR(l);
+                    if (&(*shd_root->right) == this)
+                        shd_root->hangR(left);
                     else
-                        root->hangL(l);
+                        shd_root->hangL(left);
                 }
-                else if (r != nullptr)
+                else if (right)
                 {
-                    if (root->r == this)
-                        root->hangR(r);
+                    if (&(*shd_root->right) == this)
+                        shd_root->hangR(right);
                     else
-                        root->hangL(r);
+                        shd_root->hangL(right);
                 }
                 else
                 {
-                    if (root->r == this)
-                        root->hangR(nullptr);
+                    if (&(*shd_root->right) == this)
+                        shd_root->hangR(nullptr);
                     else
-                        root->hangL(nullptr);
+                        shd_root->hangL(nullptr);
                 }
             }
         }
