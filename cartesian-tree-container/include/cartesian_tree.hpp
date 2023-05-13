@@ -5,7 +5,7 @@
 namespace Trees
 {
     template <typename T>
-    class CartesianTree
+    class CartesianTree final
     {
     private:
         /* Корень дерева */
@@ -89,21 +89,6 @@ namespace Trees
     void CartesianTree<T>::insert(T key) noexcept
     {
         top = CartesianNode<T>::insert(top, std::make_shared<CartesianNode<int>>(key));
-    }
-
-    template <typename T>
-    CartesianTree<T>::~CartesianTree()
-    {
-        // if (top == nullptr)
-        //     return;
-            
-        // while (top->left != nullptr)
-        //     delete top->left;
-
-        // while (top->right != nullptr)
-        //     delete top->right;
-
-        // delete top;
     }
 
     template <typename T>
