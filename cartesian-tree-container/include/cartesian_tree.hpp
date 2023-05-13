@@ -18,7 +18,7 @@ namespace Trees
     public:
         class Iterator;
 
-        CartesianTree();
+        CartesianTree() = default;
 
         /* Первый элемент в контейнере */
         Iterator begin();
