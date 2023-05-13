@@ -1,7 +1,9 @@
 %language "c++"
-
 %defines
+%locations
+
 %define api.value.type variant
+
 %param {yy::Driver* driver}
 
 %code requires
@@ -19,8 +21,7 @@ namespace yy { class Driver; }
 
 namespace yy {
 
-parser::token_type yylex(parser::semantic_type* yylval,                         
-                         Driver* driver);
+parser::token_type yylex(parser::semantic_type* yylval, parser::location_type* yylloc, Driver* driver);
 }
 
 }
@@ -54,11 +55,12 @@ count_less_query: COUNT_LESS INT            { driver->count_less($2); }
 
 namespace yy {
 
-parser::token_type yylex(parser::semantic_type* yylval,                         
-                         Driver* driver)
+parser::token_type yylex(parser::semantic_type* yylval, parser::location_type* yylloc, Driver* driver)                  
 {
   return driver->yylex(yylval);
 }
 
-void parser::error(const std::string&){}
+void parser::error(location const &loc, const std::string& s){
+  std::cerr << "Error at " << loc.begin.line << " line, " << loc.end.column << " column!(" << s << ")" << std::endl;
+}
 }
