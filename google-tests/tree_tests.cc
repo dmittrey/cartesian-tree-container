@@ -4,7 +4,7 @@
 using Trees::CartesianNode;
 using Trees::CartesianTree;
 
-TEST(CartesianTreeTests, Test1)
+TEST(CartesianTreeTests, OpsForOneElement)
 {
     Trees::CartesianTree<int> *tree = new Trees::CartesianTree<int>();
 
@@ -14,7 +14,7 @@ TEST(CartesianTreeTests, Test1)
     EXPECT_EQ(tree->countLess(13), 1);
 }
 
-TEST(CartesianTreeTests, Test2)
+TEST(CartesianTreeTests, OpsForEmptyStructure)
 {
     Trees::CartesianTree<int> tree;
 
@@ -22,7 +22,7 @@ TEST(CartesianTreeTests, Test2)
     EXPECT_EQ(tree.countLess(10), 0);
 }
 
-TEST(CartesianTreeTests, Test3)
+TEST(CartesianTreeTests, OpsWithPositiveNumbers)
 {
     Trees::CartesianTree<int> tree;
 
@@ -35,7 +35,7 @@ TEST(CartesianTreeTests, Test3)
     EXPECT_EQ(tree.countLess(10), 1);
 }
 
-TEST(CartesianTreeTests, Test4)
+TEST(CartesianTreeTests, OpsWithNegativeNumbers)
 {
     Trees::CartesianTree<int> tree;
 
