@@ -5,14 +5,20 @@
 namespace Trees
 {
     template <typename T>
-    class CartesianTree final
+    class CartesianTree
     {
     private:
         /* Корень дерева */
         std::shared_ptr<CartesianNode<T>> top;
 
+    protected:
+        /* Метод для подвешивание детерминированной иерархии нод */
+        CartesianTree(std::shared_ptr<CartesianNode<T>> top_node) : top(top_node) {}
+
     public:
         class Iterator;
+
+        CartesianTree();
 
         /* Первый элемент в контейнере */
         Iterator begin();
@@ -27,7 +33,8 @@ namespace Trees
         /* Вставка ключа в дерево */
         void insert(T key) noexcept;
 
-        ~CartesianTree();
+        /* Поддержка наследования */
+        virtual ~CartesianTree() {}
     };
 
     template <typename T>
@@ -99,12 +106,11 @@ namespace Trees
 
     public:
         Iterator(std::shared_ptr<CartesianNode<T>> p) : p_(p) {}
+        Iterator(const Iterator &it) : p_(it.p_) {}
 
-    public:
         bool operator!=(Iterator const &other) const;
-
-        int operator*() const;
-
+        bool operator==(Iterator const &other) const;
+        T &operator*() const;
         Iterator &operator++();
     };
 
@@ -122,7 +128,13 @@ namespace Trees
     }
 
     template <typename T>
-    int CartesianTree<T>::Iterator::operator*() const
+    bool CartesianTree<T>::Iterator::operator==(Iterator const &other) const
+    {
+        return !(*this != other);
+    }
+
+    template <typename T>
+    T &CartesianTree<T>::Iterator::operator*() const
     {
         if (p_ == nullptr)
         {
@@ -139,32 +151,34 @@ namespace Trees
         {
             throw new std::out_of_range("Increment invalid iterator");
         }
-        if (p_->l != nullptr)
+        if (p_->left != nullptr)
         {
-            p_ = p_->l;
+            p_ = p_->left;
             return *this;
         }
 
-        if (p_->r != nullptr)
+        if (p_->right != nullptr)
         {
-            p_ = p_->r;
+            p_ = p_->right;
             return *this;
         }
 
         while (true)
         {
-            if (p_->root == nullptr)
+            auto shd_root = p_->root.lock();
+
+            if (!shd_root)
             {
                 p_ = nullptr;
                 return *this;
             }
 
             auto old_p = p_;
-            p_ = p_->root;
+            p_ = shd_root;
 
-            if ((old_p != p_->r) && (p_->r != nullptr))
+            if ((old_p != p_->right) && (p_->right != nullptr))
             {
-                p_ = p_->r;
+                p_ = p_->right;
                 return *this;
             }
         }
