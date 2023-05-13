@@ -31,7 +31,9 @@ namespace Trees
         void hangL(std::shared_ptr<CartesianNode<T>> node) noexcept;
         void hangR(std::shared_ptr<CartesianNode<T>> node) noexcept;
 
-        void assignParent(std::shared_ptr<CartesianNode<T>> node) noexcept;
+        /* Методы лочащие weak_ptr в отдельном scope для операций над родительской нодой */
+        bool isParentExist() const noexcept;
+        void assignParent(std::shared_ptr<CartesianNode<T>> assignee) noexcept;
 
         /* Метод для разделения дерева по ключу(ключ в правом поддереве) */
         static std::shared_ptr<CartesianNode<T>> merge(std::shared_ptr<CartesianNode<T>> lTree, std::shared_ptr<CartesianNode<T>> rTree) noexcept;
@@ -40,7 +42,7 @@ namespace Trees
         /* Метод для вставки */
         static std::shared_ptr<CartesianNode<T>> insert(std::shared_ptr<CartesianNode<T>> tree, std::shared_ptr<CartesianNode<T>> node) noexcept;
 
-        /* Можем отнаследоваться */
+        /* Поддержка наследования */
         virtual ~CartesianNode();
     };
 
@@ -145,60 +147,53 @@ namespace Trees
     }
 
     template <typename T>
-    CartesianNode<T>::~CartesianNode()
+    bool CartesianNode<T>::isParentExist() const noexcept
     {
         auto shd_root = root.lock();
 
+        return shd_root != nullptr;
+    }
+
+    template <typename T>
+    void CartesianNode<T>::assignParent(std::shared_ptr<CartesianNode<T>> assignee) noexcept
+    {
+        auto shd_root = root.lock();
+
+        if (shd_root)
+        {
+            if (&(*shd_root->right) == this)
+                shd_root->hangR(assignee);
+            else
+                shd_root->hangL(assignee);
+        }
+    }
+
+    template <typename T>
+    CartesianNode<T>::~CartesianNode()
+    {
         if (left && right)
         {
             if (right->prior_ >= left->prior_)
             {
                 right->hangL(merge(left, right->left));
-                if (shd_root)
-                {
-                    if (&(*shd_root->right) == this)
-                        shd_root->hangR(right);
-                    else
-                        shd_root->hangL(right);
-                }
+                assignParent(right);
             }
             else
             {
                 left->hangR(merge(left->right, right));
-                if (shd_root)
-                {
-                    if (&(*shd_root->right) == this)
-                        shd_root->hangR(left);
-                    else
-                        shd_root->hangL(left);
-                }
+                assignParent(left);
             }
         }
         else
         {
-            if (shd_root)
+            if (isParentExist())
             {
                 if (left)
-                {
-                    if (&(*shd_root->right) == this)
-                        shd_root->hangR(left);
-                    else
-                        shd_root->hangL(left);
-                }
+                    assignParent(left);
                 else if (right)
-                {
-                    if (&(*shd_root->right) == this)
-                        shd_root->hangR(right);
-                    else
-                        shd_root->hangL(right);
-                }
+                    assignParent(right);
                 else
-                {
-                    if (&(*shd_root->right) == this)
-                        shd_root->hangR(nullptr);
-                    else
-                        shd_root->hangL(nullptr);
-                }
+                    assignParent(nullptr);
             }
         }
     }
