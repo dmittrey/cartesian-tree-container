@@ -45,15 +45,15 @@ namespace Trees
     template <typename T>
     T CartesianTree<T>::findKthStats(int k) const
     {
-        CartesianNode<T> *cur = top;
+        std::shared_ptr<CartesianNode<T>> cur = top;
         while (cur != nullptr)
         {
-            int sizeLeft = CartesianNode<T>::size(cur->l);
+            int sizeLeft = CartesianNode<T>::size(cur->left);
 
             if (sizeLeft == k)
                 return cur->key_;
 
-            cur = (sizeLeft > k) ? cur->l : cur->r;
+            cur = (sizeLeft > k) ? cur->left : cur->right;
             if (sizeLeft < k)
                 k -= sizeLeft + 1;
         }
@@ -68,17 +68,17 @@ namespace Trees
             return 0;
 
         int prev_less = 0;
-        CartesianNode<T> *cur = top;
+        std::shared_ptr<CartesianNode<T>> cur = top;
         while (cur != nullptr)
         {
             if (cur->key_ < upperBound)
             {
-                prev_less += CartesianNode<T>::size(cur) - CartesianNode<T>::size(cur->r);
-                cur = cur->r;
+                prev_less += CartesianNode<T>::size(cur) - CartesianNode<T>::size(cur->right);
+                cur = cur->right;
             }
             else
             {
-                cur = cur->l;
+                cur = cur->left;
             }
         }
 
@@ -88,7 +88,7 @@ namespace Trees
     template <typename T>
     void CartesianTree<T>::insert(T key) noexcept
     {
-        top = CartesianNode<T>::insert(top, new CartesianNode(key));
+        top = CartesianNode<T>::insert(top, std::make_shared<CartesianNode<int>>(key));
     }
 
     template <typename T>

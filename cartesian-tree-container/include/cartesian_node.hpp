@@ -19,7 +19,7 @@ namespace Trees
 
         std::shared_ptr<CartesianNode<T>> left, right;
 
-        CartesianNode(T key) : key_(key) { std::cout << "Ctor" << key_ << std::endl; }
+        CartesianNode(T key) : key_(key) {}
 
         /* Метод для получения размера поддерева */
         static int size(std::shared_ptr<CartesianNode<T>> node) noexcept;
@@ -103,17 +103,17 @@ namespace Trees
 
         if (index < tree->key_) //  Ключ в правом поддереве
         {
-            auto [l, r] = split(tree->l, index);
-            tree->hangL(r);
+            auto [left, right] = split(tree->left, index);
+            tree->hangL(right);
             tree->recalc();
-            return {l, tree};
+            return {left, tree};
         }
         else
         {
-            auto [l, r] = split(tree->r, index);
-            tree->hangR(l);
+            auto [left, right] = split(tree->right, index);
+            tree->hangR(left);
             tree->recalc();
-            return {tree, r};
+            return {tree, right};
         }
     }
 
@@ -134,9 +134,9 @@ namespace Trees
         else
         {
             if (node->key_ < tree->key_)
-                tree->hangL(insert(tree->l, node));
+                tree->hangL(insert(tree->left, node));
             else
-                tree->hangR(insert(tree->r, node));
+                tree->hangR(insert(tree->right, node));
 
             tree->recalc();
             return tree;
@@ -148,7 +148,6 @@ namespace Trees
     {
         auto shd_root = root.lock();
 
-        std::cout << "Dtor" << key_ << std::endl;
         if (left && right)
         {
             if (right->prior_ >= left->prior_)
