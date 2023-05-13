@@ -40,7 +40,8 @@ namespace Trees
         /* Метод для вставки */
         static std::shared_ptr<CartesianNode<T>> insert(std::shared_ptr<CartesianNode<T>> tree, std::shared_ptr<CartesianNode<T>> node) noexcept;
 
-        ~CartesianNode();
+        /* Можем отнаследоваться */
+        virtual ~CartesianNode();
     };
 
     template <typename T>
