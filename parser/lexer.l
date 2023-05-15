@@ -17,6 +17,7 @@ DIGIT1  [1-9]
 k                                           return yy::parser::token_type::INSERT;
 m                                           return yy::parser::token_type::FIND_KTH;
 n                                           return yy::parser::token_type::COUNT_LESS;
+q                                           return yy::parser::token_type::EXIT;
 
 (-?){DIGIT1}{DIGIT}*                        return yy::parser::token_type::INT;
 

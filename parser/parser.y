@@ -29,6 +29,7 @@ parser::token_type yylex(parser::semantic_type* yylval, parser::location_type* y
 %token INSERT
 %token FIND_KTH
 %token COUNT_LESS
+%token EXIT
 
 %token <int> INT
 
@@ -36,12 +37,14 @@ parser::token_type yylex(parser::semantic_type* yylval, parser::location_type* y
 
 %%
 
-query_list: insert_query                    {  }
-  | query_list insert_query                 {  }
-  | find_kth_query                          {  }
-  | query_list find_kth_query               {  }
-  | count_less_query                        {  }
-  | query_list count_less_query             {  }
+query_list: insert_query                    
+  | query_list insert_query                 
+  | find_kth_query                          
+  | query_list find_kth_query               
+  | count_less_query                        
+  | query_list count_less_query             
+  | EXIT                                    { YYABORT; }
+  | query_list EXIT                         { YYABORT; }
 ;
 
 insert_query: INSERT INT                    { driver->insert($2); }
@@ -61,6 +64,6 @@ parser::token_type yylex(parser::semantic_type* yylval, parser::location_type* y
 }
 
 void parser::error(location const &loc, const std::string& s){
-  std::cerr << "Error at " << loc.begin.line << " line, " << loc.end.column << " column!(" << s << ")" << std::endl;
+  std::cerr << "Error at " << loc.begin.line << " line, " << loc.end.column << " column!(" << s << ")\n" << std::endl;
 }
 }
