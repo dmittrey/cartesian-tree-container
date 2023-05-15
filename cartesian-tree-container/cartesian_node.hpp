@@ -34,12 +34,10 @@ namespace Trees
         bool isParentExist() const noexcept;
         void assignParent(std::shared_ptr<CartesianNode<T>> assignee) noexcept;
 
-        /* Метод для разделения дерева по ключу(ключ в правом поддереве) */
-        static std::shared_ptr<CartesianNode<T>> merge(std::shared_ptr<CartesianNode<T>> lTree, std::shared_ptr<CartesianNode<T>> rTree) noexcept;
         /* Метод для слияния двух деревьев */
+        static std::shared_ptr<CartesianNode<T>> merge(std::shared_ptr<CartesianNode<T>> lTree, std::shared_ptr<CartesianNode<T>> rTree) noexcept;
+        /* Метод для разделения дерева по ключу(ключ в левом поддереве) */ 
         static std::pair<std::shared_ptr<CartesianNode<T>>, std::shared_ptr<CartesianNode<T>>> split(std::shared_ptr<CartesianNode<T>> tree, int index) noexcept;
-        /* Метод для вставки */
-        static std::shared_ptr<CartesianNode<T>> insert(std::shared_ptr<CartesianNode<T>> tree, std::shared_ptr<CartesianNode<T>> node) noexcept;
 
         /* Поддержка наследования */
         virtual ~CartesianNode();
@@ -116,32 +114,6 @@ namespace Trees
             tree->hangR(left);
             tree->recalc();
             return {tree, right};
-        }
-    }
-
-    template <typename T>
-    std::shared_ptr<CartesianNode<T>> CartesianNode<T>::insert(std::shared_ptr<CartesianNode<T>> tree, std::shared_ptr<CartesianNode<T>> node) noexcept
-    {
-        if (tree == nullptr)
-            return node;
-
-        if (node->prior_ > tree->prior_)
-        {
-            auto [l, r] = split(tree, node->key_);
-            node->hangL(l);
-            node->hangR(r);
-            node->recalc();
-            return node;
-        }
-        else
-        {
-            if (node->key_ < tree->key_)
-                tree->hangL(insert(tree->left, node));
-            else
-                tree->hangR(insert(tree->right, node));
-
-            tree->recalc();
-            return tree;
         }
     }
 

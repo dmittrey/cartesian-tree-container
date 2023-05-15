@@ -13,6 +13,9 @@ namespace Trees
         /* Корень дерева */
         std::shared_ptr<CartesianNode<T>> top;
 
+        /* Метод для вставки */
+        static std::shared_ptr<CartesianNode<T>> insert(std::shared_ptr<CartesianNode<T>> tree, std::shared_ptr<CartesianNode<T>> node) noexcept;
+
     protected:
         /* Метод для подвешивание детерминированной иерархии нод */
         CartesianTree(std::shared_ptr<CartesianNode<T>> top_node) : top(top_node) {}
@@ -95,9 +98,35 @@ namespace Trees
     }
 
     template <typename T>
+    std::shared_ptr<CartesianNode<T>> CartesianTree<T>::insert(std::shared_ptr<CartesianNode<T>> tree, std::shared_ptr<CartesianNode<T>> node) noexcept
+    {
+        if (tree == nullptr)
+            return node;
+
+        if (node->prior_ > tree->prior_)
+        {
+            auto [l, r] = CartesianNode<T>::split(tree, node->key_);
+            node->hangL(l);
+            node->hangR(r);
+            node->recalc();
+            return node;
+        }
+        else
+        {
+            if (node->key_ < tree->key_)
+                tree->hangL(insert(tree->left, node));
+            else
+                tree->hangR(insert(tree->right, node));
+
+            tree->recalc();
+            return tree;
+        }
+    }
+
+    template <typename T>
     void CartesianTree<T>::insert(T key) noexcept
     {
-        top = CartesianNode<T>::insert(top, std::make_shared<CartesianNode<int>>(key));
+        top = insert(top, std::make_shared<CartesianNode<int>>(key));
     }
 
     template <typename T>
