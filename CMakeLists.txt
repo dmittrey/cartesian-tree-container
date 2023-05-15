@@ -8,9 +8,14 @@ add_subdirectory(cartesian-tree-container)
 add_subdirectory(google-tests)
 
 add_executable(${PROJECT_NAME} main.cc)
-
 target_link_libraries(${PROJECT_NAME} PRIVATE cartesian-tree-container)
 target_link_libraries(${PROJECT_NAME} PRIVATE parser)
+
+add_executable(countless-bench bench_countless.cc)
+target_link_libraries(countless-bench PRIVATE cartesian-tree-container)
+
+add_executable(findkth-bench bench_findkth.cc)
+target_link_libraries(findkth-bench PRIVATE cartesian-tree-container)
 
 enable_testing()
 
