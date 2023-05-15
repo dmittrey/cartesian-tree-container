@@ -1,11 +1,13 @@
 cmake_minimum_required(VERSION 3.16)
 project(cartesian-tree-container)
 
-add_library(
-    ${PROJECT_NAME} INTERFACE
-    "${CMAKE_CURRENT_SOURCE_DIR}/include/cartesian_tree.hpp" 
-    "${CMAKE_CURRENT_SOURCE_DIR}/include/cartesian_node.hpp" 
-    )
+add_library(${PROJECT_NAME} INTERFACE)
 
-target_include_directories(${PROJECT_NAME} INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}")
+target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_20)
+
+target_include_directories(
+    ${PROJECT_NAME} 
+    INTERFACE
+    $<BUILD_INTERFACE:${${PROJECT_NAME}_SOURCE_DIR}>
+    )
 

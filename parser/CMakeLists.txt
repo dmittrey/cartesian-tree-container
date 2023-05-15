@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.16)
 project(parser)
 
+set(CMAKE_CXX_STANDARD 20)
+
 find_package(BISON REQUIRED)
 find_package(FLEX REQUIRED)
 
@@ -24,6 +26,5 @@ add_library(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME} PRIVATE cartesian-tree-container)
 
-target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
