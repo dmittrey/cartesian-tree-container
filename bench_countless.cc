@@ -6,29 +6,19 @@ int main()
 {
     Trees::CartesianTree<int> tree;
     std::vector<int> vec;
-    for (size_t i = 0; i < 10000; ++i)
+    for (size_t i = 0; i < 20000; ++i)
     {
-        for (size_t k = 0; k < 500; ++k)
+        for (size_t k = 0; k < 1000; ++k)
         {
             auto i = std::rand();
             tree.insert(i);
             vec.push_back(i);
         }
         clock_t start1 = clock();
-        auto count1 = tree.countLess(5000);
+        auto count1 = tree.countLess(std::rand());
         clock_t end1 = clock();
         double clocks1 = (double)(end1 - start1);
 
-        auto count2 = 0;
-        clock_t start2 = clock();
-        for (size_t n = 0; n < vec.size(); ++n)
-        {
-            if (vec[n] < 5000)
-                ++count2;
-        }
-        clock_t end2 = clock();
-        double clocks2 = (double)(end2 - start2);
-        assert(count1 == count2);
-        std::cout << i * 500 << " " << clocks1 << " " << clocks2 << std::endl;
+        std::cout << i * 500 << " " << clocks1 << std::endl;
     }
 }
