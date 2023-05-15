@@ -10,7 +10,7 @@
 #include <FlexLexer.h>
 #include "parser.tab.hh"
 
-#include "include/cartesian_tree.hpp"
+#include "cartesian_tree.hpp"
 
 namespace yy
 {

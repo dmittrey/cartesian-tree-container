@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "driver.hpp"
-#include "include/cartesian_tree.hpp"
+#include "cartesian_tree.hpp"
 
 int main()
 {

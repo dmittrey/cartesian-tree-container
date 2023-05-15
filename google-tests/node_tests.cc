@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
-#include "include/cartesian_node.hpp"
+
+#include "cartesian_node.hpp"
 
 using Trees::CartesianNode;
 

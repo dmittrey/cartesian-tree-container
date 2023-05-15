@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "cartesian_node.hpp"
 
 namespace Trees
