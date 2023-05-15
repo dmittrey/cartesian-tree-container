@@ -6,7 +6,6 @@
 
 using Trees::CartesianNode;
 using Trees::CartesianTree;
-using int_iterator = Trees::CartesianTree<int>::Iterator;
 
 struct TestCartesianTree : public CartesianTree<int>
 {
@@ -14,6 +13,7 @@ struct TestCartesianTree : public CartesianTree<int>
     TestCartesianTree(std::shared_ptr<CartesianNode<int>> top) : CartesianTree(top) {}
 };
 
+/* Итератор заявляет прямой проход дерева => следует проверить */
 TEST(CartesianTreeIteratorTests, ForwardInLeft)
 {
     auto top_node = std::make_shared<CartesianNode<int>>(5);
@@ -23,7 +23,7 @@ TEST(CartesianTreeIteratorTests, ForwardInLeft)
     left_t1_node->hangL(left_t2_node);
     TestCartesianTree tree(top_node);
 
-    int_iterator it = tree.begin();
+    auto it = tree.begin();
     EXPECT_EQ(*it, 5);
     ++it;
     EXPECT_EQ(*it, 4);
@@ -42,7 +42,7 @@ TEST(CartesianTreeIteratorTests, ForwardInRight)
     right_t1_node->hangL(right_t2_node);
     TestCartesianTree tree(top_node);
 
-    int_iterator it = tree.begin();
+    auto it = tree.begin();
     EXPECT_EQ(*it, 5);
     ++it;
     EXPECT_EQ(*it, 6);
@@ -61,7 +61,7 @@ TEST(CartesianTreeIteratorTests, UpInAnotherTreeFromTearOne)
     top_node->hangR(r_node);
     TestCartesianTree tree(top_node);
 
-    int_iterator it = tree.begin();
+    auto it = tree.begin();
     EXPECT_EQ(*it, 5);
     ++it;
     EXPECT_EQ(*it, 4);
@@ -82,7 +82,7 @@ TEST(CartesianTreeIteratorTests, UpInAnotherTreeFromTearTwo)
     l_t1_node->hangL(l_t2_node);
     TestCartesianTree tree(top_node);
 
-    int_iterator it = tree.begin();
+    auto it = tree.begin();
     EXPECT_EQ(*it, 5);
     ++it;
     EXPECT_EQ(*it, 4);
@@ -94,6 +94,7 @@ TEST(CartesianTreeIteratorTests, UpInAnotherTreeFromTearTwo)
     EXPECT_EQ(it, tree.end());
 }
 
+/* Проверка на то, что итератор точно обойдет все вершины */
 TEST(CartesianTreeIteratorTests, IterateOverAll)
 {
     TestCartesianTree tree;
@@ -101,7 +102,7 @@ TEST(CartesianTreeIteratorTests, IterateOverAll)
     for (int i : keys)
         tree.insert(i);
 
-    for (int_iterator it = tree.begin(); it != tree.end(); ++it)
+    for (auto it = tree.begin(); it != tree.end(); ++it)
         EXPECT_EQ(keys.erase(*it), 1);
 
     EXPECT_EQ(keys.size(), 0);

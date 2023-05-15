@@ -2,17 +2,16 @@
 
 #include "cartesian_tree.hpp"
 
-using Trees::CartesianNode;
 using Trees::CartesianTree;
 
 TEST(CartesianTreeTests, OpsForOneElement)
 {
-    Trees::CartesianTree<int> *tree = new Trees::CartesianTree<int>();
+    Trees::CartesianTree<int> tree;
 
-    tree->insert(12);
+    tree.insert(12);
 
-    EXPECT_EQ(tree->findKthStats(0), 12);
-    EXPECT_EQ(tree->countLess(13), 1);
+    EXPECT_EQ(tree.findKthStats(0), 12);
+    EXPECT_EQ(tree.countLess(13), 1);
 }
 
 TEST(CartesianTreeTests, OpsForEmptyStructure)
